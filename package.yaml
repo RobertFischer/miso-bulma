@@ -1,0 +1,90 @@
+name: miso-bulma
+version: 0.0.0.1
+synopsis: Use the Bulma CSS framework within the Miso web framework.
+description: See README at <https://github.com/RobertFischer/miso-bulma#README.md>
+maintainer: Robert Fischer <smokejumperit+miso-bulma@gmail.com>
+license: MIT
+github: RobertFischer/miso-bulma
+category: Development
+
+extra-source-files:
+- README.md
+- package.yaml
+- stack.yaml
+
+flags: 
+  Production:
+    description: Disable failing on warnings and enable aggressive optimizations
+    default: false
+    manual: true
+
+default-extensions:
+- RebindableSyntax
+- MonadFailDesugaring
+- FlexibleInstances
+- FlexibleContexts
+- MultiParamTypeClasses
+- DisambiguateRecordFields
+- DeriveGeneric
+- TypeFamilies
+- BangPatterns
+- DataKinds
+- ScopedTypeVariables
+
+ghc-options: 
+  - -Wall
+  - -Wcompat 
+  - -Wincomplete-record-updates 
+  - -Wincomplete-uni-patterns 
+  - -Wredundant-constraints 
+  - -Wno-missing-monadfail-instances
+  - -Wnoncanonical-monad-instances 
+  - -Wall-missed-specialisations
+  - -Wnoncanonical-monadfail-instances 
+  - -Wimplicit-prelude 
+  - -Wmissing-exported-signatures 
+  - -Widentities
+  - -fno-warn-name-shadowing 
+  - -fno-warn-tabs 
+  - -fno-max-relevant-binds 
+  - -fprint-potential-instances 
+  - -j
+
+
+when:
+  - condition: flag(Production)
+    then:
+      ghc-options:
+        - -feager-blackholing 
+        - -funbox-strict-fields 
+        - -fstatic-argument-transformation
+        - -flate-dmd-anal 
+        - -fexpose-all-unfoldings 
+        - -fspecialise-aggressively 
+        - -fexcess-precision 
+        - -fmax-simplifier-iterations=15
+        - -fsimplifier-phases=4
+        - -fstrictness-before=3
+        - -funfolding-keeness-factor=1.5
+        - -funfolding-use-threshold=150
+        - -O2
+    else:
+      cpp-options:
+        - -DDEVELOPMENT
+      ghc-options:
+        - -freverse-errors
+        - -Werror 
+        - -O0 
+        - -dcore-lint 
+        - -dcmm-lint
+
+dependencies:
+  - base >= 4.9 && < 5
+  - miso >= 0.20.0.0 && < 1
+  - rfc >= 0.0.0.25
+  - network-uri
+
+library:
+  source-dirs: src
+  other-modules: Miso.Bulma.Internal
+
